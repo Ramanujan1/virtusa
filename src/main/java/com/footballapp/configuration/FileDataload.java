@@ -11,9 +11,11 @@ import java.util.List;
 
 public class FileDataload implements ILoadTeamsData{
 
+    BufferedReader br;
+
     public List<TeamDetails> getTeamDetails() throws IOException {
 
-        BufferedReader br = new BufferedReader(new FileReader(Constants.DATA_FILE));
+        br = new BufferedReader(new FileReader(Constants.DATA_FILE));
         String line = "";
         List<TeamDetails> teamDetailsList = new ArrayList<>();
 
