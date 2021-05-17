@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="'Please enter the schedule date!'" />
+<form   method="post" action="/generateSchedule">
+    Enter a date to schedule matches: <input type="date" id="scheduleDate" name="scheduleDate">
+
+    <input type="submit" name="submit" value="Submit" />
+</ul>
+
+<br/>
+
+    <div th:if="${ not#lists.isEmpty(matches)}">
+        <br/>
+        <p th:text="' Schedule generated or the Date  '"/><input type="text" readonly  value="${scheduleDate}">
+        <table style="border:1px solid black;">
+            <tr>
+                <th>Home Team</th>
+                <th>Away Team</th>
+                <th>Location</th>
+            </tr>
+            <tr th:each="match : ${matches}">
+                <td th:text="${match.team1.teamName}"></td>
+                <td th:text="${match.team2.teamName}"></td>
+                <td th:text="${match.locationName}"></td>
+            </tr>
+            <table>
+    </div>
+
+
+</form>
+</ul>
+</body>
+</html>
