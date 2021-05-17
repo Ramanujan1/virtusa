@@ -5,7 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<p th:text="'Please enter the schedule date!'" />
+
+<h2 th:text="'Tournament Scheduling Application'" />
+
+<p th:text="'Please enter the date on which you want to schedule all the matches !'" />
 <form   method="post" action="/generateSchedule">
     Enter a date to schedule matches: <input type="date" id="scheduleDate" name="scheduleDate">
 
@@ -14,9 +17,13 @@
 
 <br/>
 
+    <div th:if="${ not#strings.isEmpty(error)}">
+
+        <h4 style="color:Tomato;">Please enter a valid date !!!</h4>
+    </div>
     <div th:if="${ not#lists.isEmpty(matches)}">
-        <br/>
-        <p th:text="' Schedule generated or the Date  '"/><input type="text" readonly  value="${scheduleDate}">
+
+        <b> <p th:text="'Schedule generated for the Date:  '+ ${scheduleDateFinal}"/> </b>
         <table style="border:1px solid black;">
             <tr>
                 <th>Home Team</th>

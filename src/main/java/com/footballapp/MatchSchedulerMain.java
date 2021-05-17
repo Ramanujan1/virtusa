@@ -12,7 +12,6 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 
 public class MatchSchedulerMain {
 
-
     public static void main(String[] args) {
         SpringApplication.run(MatchSchedulerMain.class, args);
     }

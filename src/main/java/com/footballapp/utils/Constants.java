@@ -5,9 +5,9 @@ public class Constants {
     public static final String FILE_DELIMITER = ",";
 
     public enum MatchLocation {
-       HOME,
-       AWAY
-   }
+        HOME,
+        AWAY
+    }
 
-   public static String Verces = "_vs_";
+    public static String Verces = "_vs_";
 }

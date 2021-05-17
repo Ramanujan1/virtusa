@@ -2,6 +2,8 @@ package com.footballapp.model;
 
 
 
+import lombok.Builder;
+
 import java.sql.Timestamp;
 import java.util.Date;
 

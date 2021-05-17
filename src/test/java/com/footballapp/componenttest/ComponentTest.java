@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @RunWith(SpringRunner.class)
-//@SpringBootTest(classes = MatchSchedulerMain.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @WebMvcTest(ScheduleController.class)
 public class ComponentTest {
 
@@ -43,11 +42,8 @@ public class ComponentTest {
     @MockBean
     private ScheduleComputationService scheduleComputationService;
 
-    RestTemplate restTemplate = new RestTemplate();
-    HttpHeaders httpHeaders = new HttpHeaders();
-
     @Before
-    public void setUp(){
+    public void setUp() {
 
         matchList = new ArrayList<>();
         finalSchedule = new FinalSchedule();
@@ -113,6 +109,23 @@ public class ComponentTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("matchSchedule"))
                 .andExpect(model().attribute("matches", scheduleComputationService.generateFinalScheduleByDate(scheduleDate).getMatchList()))
+                .andExpect(model().attribute("scheduleDateFinal", "17 January 2021"))
                 .andExpect(model().size(2));
     }
+
+
+    @Test
+    public void shouldReturnError() throws Exception {
+
+
+        this.mockMvc
+                .perform(post("/generateSchedule?scheduleDate=")
+                        .contentType(MediaType.TEXT_PLAIN)
+                )
+
+                .andExpect(status().isOk())
+                .andExpect(view().name("matchSchedule"))
+                .andExpect(model().attribute("error", "Enter a valid date"))
+                .andExpect(model().size(1));
     }
+}

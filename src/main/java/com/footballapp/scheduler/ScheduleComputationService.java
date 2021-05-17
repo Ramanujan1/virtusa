@@ -20,18 +20,13 @@ public class ScheduleComputationService {
     @Qualifier("teamDetailsList")
     private List<TeamDetails> teamDetailsList;
 
-    private String tournamentName;
-    private List<Match> matches;
-
-
-    private List<String> generateFinalSchedule(List<TeamDetails> teamDetailsList) {
+    private List<String> generateMatchListForFinalSchedule(List<TeamDetails> teamDetailsList) {
 
         HashMap teamLastPlayedLocationStatus = new HashMap();
         List<String> matchScheduleSorted = new LinkedList<>();
-        List<String> matchScheduleUnSorted = new LinkedList<>();
 
         // generate all possible match combinations for given team list
-        Set<String> matchCombinationsString =
+        List<String> matchCombinationsStringFromInput =
                 teamDetailsList.stream()
                         .flatMap(homeTeam -> teamDetailsList.stream().map(awayTeam -> {
                             Match match = new Match();
@@ -41,128 +36,52 @@ public class ScheduleComputationService {
                             return match;
                         })).filter(match -> match != null && !match.getTeam1().equals(match.getTeam2()))
                         .map(match -> {
-                                return match.getTeam1().getTeamName().concat(Constants.Verces).concat(match.getTeam2().getTeamName());
+                                    return match.getTeam1().getTeamName().concat(Constants.Verces).concat(match.getTeam2().getTeamName());
                                 }
                         )
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toList());
 
-        return sortMatchSchedules(matchCombinationsString, matchScheduleUnSorted, teamLastPlayedLocationStatus, matchScheduleSorted);
+        return handleUnsortedHomeAwayMatches(matchScheduleSorted, teamLastPlayedLocationStatus, matchCombinationsStringFromInput);
+
+    }
+
+    private void initializeStausMap(HashMap teamLastPlayedLocationStatus, String[] teamArray) {
+        if (teamLastPlayedLocationStatus.get(teamArray[0]) == null) {
+            teamLastPlayedLocationStatus.put(teamArray[0], "");
+        }
+
+        if (teamLastPlayedLocationStatus.get(teamArray[1]) == null) {
+            teamLastPlayedLocationStatus.put(teamArray[1], "");
+        }
     }
 
 
-    private List<String> sortMatchSchedules(Set<String> matchCombinationsString, List<String> matchScheduleUnSorted, HashMap teamLastPlayedLocationStatus, List<String> matchScheduleSorted) {
-
-
-        // for all match combination apply the home and away rule for ordering
-        // the undorted list should be empty by the end of the iteration
-        matchCombinationsString.stream().forEach(matchKey -> {
-            String[] teamArray = matchKey.split(Verces);
-
-            if (teamLastPlayedLocationStatus.get(teamArray[0]) == null) {
-                teamLastPlayedLocationStatus.put(teamArray[0], "");
-            }
-
-            if (teamLastPlayedLocationStatus.get(teamArray[1]) == null) {
-                teamLastPlayedLocationStatus.put(teamArray[1], "");
-            }
-
-            if ((teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
-                    && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.HOME))
-                    || (
-                    teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.AWAY)
-                            && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.AWAY)
-            )) {
-                matchScheduleUnSorted.add(matchKey);
-
-            } else if ((teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
-                    && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.AWAY))
-
-                    ||
-                    (teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
-                    )
-                    || (teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.AWAY))
-
-                    ) {
-                matchScheduleSorted.add(teamArray[1].concat(Verces).concat(teamArray[0]));
-
-                teamLastPlayedLocationStatus.put(teamArray[0], Constants.MatchLocation.AWAY);
-                teamLastPlayedLocationStatus.put(teamArray[1], Constants.MatchLocation.HOME);
-
-
-            } else {
-                matchScheduleSorted.add(matchKey);
-                teamLastPlayedLocationStatus.put(teamArray[1], Constants.MatchLocation.AWAY);
-                teamLastPlayedLocationStatus.put(teamArray[0], Constants.MatchLocation.HOME);
-            }
-        });
-
-
-        return handleUnsortedMatches(matchScheduleSorted, teamLastPlayedLocationStatus, matchScheduleUnSorted);
-    }
-
-
-    private List<String> handleUnsortedMatches(List<String>  matchScheduleSorted , HashMap teamLastPlayedLocationStatus, List<String> matchScheduleUnSorted) {
+    private List<String> handleUnsortedHomeAwayMatches(List<String> matchScheduleSorted, HashMap teamLastPlayedLocationStatus, List<String> matchCombinationsStringFromInput) {
         // for the remaining unscheduled matches iterate multiple times to insert into the final sorted schedule
-        int interationCount = 0;
-        while (matchScheduleUnSorted.size() > 0) {
 
+        int unsortedListIterationCount = 0;
+        while (matchCombinationsStringFromInput.size() > 0) {
+            Iterator unsortedListIterator = matchCombinationsStringFromInput.iterator();
 
-            Iterator iter = matchScheduleUnSorted.iterator();
+            while (unsortedListIterator.hasNext()) {
 
-            while (iter.hasNext()) {
-                interationCount++;
-                if(interationCount > 2) {
-                    // handle special case where
-                    String lastMatch = matchScheduleUnSorted.get(matchScheduleUnSorted.size() - 1);
-                    matchScheduleUnSorted.set(matchScheduleUnSorted.size() - 1, matchScheduleUnSorted.get(0));
-                    matchScheduleUnSorted.set(0, lastMatch);
+                unsortedListIterationCount++;
+
+                if (unsortedListIterationCount > 2) {
+                    // handle special case where the top most match combination in the unsorted list cannot be scheduled
+                    // in such cases swap the top most element with the last element and continue the iteration
+                    String lastMatch = matchCombinationsStringFromInput.get(matchCombinationsStringFromInput.size() - 1);
+                    matchCombinationsStringFromInput.set(matchCombinationsStringFromInput.size() - 1, matchCombinationsStringFromInput.get(0));
+                    matchCombinationsStringFromInput.set(0, lastMatch);
                 }
 
-                String team = (String) iter.next();
+                String team = (String) unsortedListIterator.next();
                 String[] teamArray = team.split(Verces);
 
 
-                if ((teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
-                        && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.HOME))
-                        || (
-                        teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.AWAY)
-                                && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.AWAY)
-                )) {
-                    if(interationCount > 5) {
-                        addToSortedList( matchScheduleSorted,  teamLastPlayedLocationStatus,  iter,  teamArray[1],  teamArray[0] );
+                initializeStausMap(teamLastPlayedLocationStatus, teamArray);
 
-                        interationCount=0;
-                    }
-
-                } else if ((teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
-                        && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.AWAY))
-
-                        ||
-                        (teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
-                        )
-                        || (teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.AWAY))
-
-                        ) {
-//                    matchScheduleSorted.add(teamArray[1].concat(Constants.Verces).concat(teamArray[0]));
-//                    iter.remove();
-//
-//                    teamLastPlayedLocationStatus.put(teamArray[0], Constants.MatchLocation.AWAY);
-//                    teamLastPlayedLocationStatus.put(teamArray[1], Constants.MatchLocation.HOME);
-
-                    addToSortedList( matchScheduleSorted,  teamLastPlayedLocationStatus,  iter,  teamArray[0],  teamArray[1] );
-
-                        interationCount=0;
-
-                } else {
-//                    matchScheduleSorted.add(team);
-//                    iter.remove();
-//                    teamLastPlayedLocationStatus.put(teamArray[1], Constants.MatchLocation.AWAY);
-//                    teamLastPlayedLocationStatus.put(teamArray[0], Constants.MatchLocation.HOME);
-
-                    addToSortedList( matchScheduleSorted,  teamLastPlayedLocationStatus,  iter,  teamArray[1],  teamArray[0] );
-
-                    interationCount=0;
-                }
+                unsortedListIterationCount = getUnsortedListIterationCount(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterationCount, unsortedListIterator, teamArray);
 
 
             }
@@ -170,8 +89,44 @@ public class ScheduleComputationService {
         return matchScheduleSorted;
     }
 
+    private int getUnsortedListIterationCount(List<String> matchScheduleSorted, HashMap teamLastPlayedLocationStatus, int unsortedListIterationCount, Iterator unsortedListIterator, String[] teamArray) {
+        if ((teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
+                && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.HOME))
+                || (
+                teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.AWAY)
+                        && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.AWAY)
+        )) {
+            if (unsortedListIterationCount > 5) {
+                addToSortedList(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterator, teamArray[1], teamArray[0]);
 
-    private void addToSortedList(List<String> matchScheduleSorted, HashMap teamLastPlayedLocationStatus, Iterator iter, String teamHome, String teamAway ) {
+                unsortedListIterationCount = 0;
+            }
+
+        } else if ((teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
+                && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.AWAY))
+
+                ||
+                (teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
+                )
+                || (teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.AWAY))
+
+                ) {
+
+            addToSortedList(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterator, teamArray[0], teamArray[1]);
+
+            unsortedListIterationCount = 0;
+
+        } else {
+
+            addToSortedList(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterator, teamArray[1], teamArray[0]);
+
+            unsortedListIterationCount = 0;
+        }
+        return unsortedListIterationCount;
+    }
+
+
+    private void addToSortedList(List<String> matchScheduleSorted, HashMap teamLastPlayedLocationStatus, Iterator iter, String teamHome, String teamAway) {
         matchScheduleSorted.add(teamAway.concat(Constants.Verces).concat(teamHome));
         iter.remove();
 
@@ -185,7 +140,7 @@ public class ScheduleComputationService {
 
         FinalSchedule finalSchedule = new FinalSchedule();
 
-        List<String> sortedSchedule = generateFinalSchedule(teamDetailsList);
+        List<String> sortedSchedule = generateMatchListForFinalSchedule(teamDetailsList);
         List<Match> matchList = new ArrayList<>();
 
         sortedSchedule.stream().forEach(matchString -> {

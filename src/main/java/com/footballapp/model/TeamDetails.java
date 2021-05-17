@@ -1,5 +1,9 @@
 package com.footballapp.model;
 
+import lombok.Builder;
+import lombok.Getter;
+
+
 public class TeamDetails {
 
     private String teamName;
