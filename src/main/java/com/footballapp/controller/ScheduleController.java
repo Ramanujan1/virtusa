@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
+
 @Controller
 public class ScheduleController {
 
@@ -21,6 +23,7 @@ public class ScheduleController {
     @GetMapping("/createSchedule")
     public String greeting(Model model) {
 
+        LOGGER.info("Football Scheduler : Render Home page ");
         return "matchSchedule";
     }
 
@@ -37,6 +40,8 @@ public class ScheduleController {
             model.addAttribute("matches", scheduleComputationService.generateFinalScheduleByDate(scheduleDateObject).getMatchList());
             model.addAttribute("scheduleDateFinal", scheduleDateFinal);
         }
+
+        LOGGER.info("Football Scheduler : Final Schedule constructed ");
 
         return "matchSchedule";
     }

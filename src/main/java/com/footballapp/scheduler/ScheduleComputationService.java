@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.footballapp.utils.Constants.Verces;
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 @Service
 public class ScheduleComputationService {
@@ -42,6 +43,7 @@ public class ScheduleComputationService {
                         )
                         .collect(Collectors.toList());
 
+        LOGGER.info("Football Scheduler : Generated All possible Match combinations for team list, Match combinations count: "+matchCombinationsStringFromInput.size());
 
 
         return sortScedule.handleUnsortedHomeAwayMatches(matchScheduleSorted, matchCombinationsStringFromInput);
@@ -73,6 +75,8 @@ public class ScheduleComputationService {
 
         });
         finalSchedule.setScheduleDate(scheduleDate);
+
+        LOGGER.info("Football Scheduler : Final Schedule generate for the given date");
 
         return finalSchedule;
     }

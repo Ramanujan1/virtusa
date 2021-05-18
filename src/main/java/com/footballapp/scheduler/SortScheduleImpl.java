@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.footballapp.utils.Constants.Verces;
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 public class SortScheduleImpl implements ISortScedule {
 
@@ -43,6 +44,7 @@ public class SortScheduleImpl implements ISortScedule {
 
             }
         }
+        LOGGER.info("Football Scheduler : Generated sorted schedule from Match combinations , Final sorted list count: "+matchScheduleSorted.size());
         return matchScheduleSorted;
     }
 
@@ -54,6 +56,8 @@ public class SortScheduleImpl implements ISortScedule {
         if (teamLastPlayedLocationStatus.get(teamArray[1]) == null) {
             teamLastPlayedLocationStatus.put(teamArray[1], "");
         }
+        LOGGER.info("Football Scheduler : Generated sorted schedule from Match combinations , Initialize teamLastPlayedLocationStatus Map");
+
     }
 
 
@@ -90,6 +94,9 @@ public class SortScheduleImpl implements ISortScedule {
 
             unsortedListIterationCount = 0;
         }
+
+        LOGGER.info("Football Scheduler : Generateing unsorrted schedule from Match combinations ");
+
         return unsortedListIterationCount;
     }
 
