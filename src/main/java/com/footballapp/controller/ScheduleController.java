@@ -33,7 +33,7 @@ public class ScheduleController {
         if (scheduleDate == null || scheduleDate.trim().equals("")) {
             model.addAttribute("error", "Enter a valid date");
         } else {
-            Date scheduleDateObject = new SimpleDateFormat("yyyy-mm-dd").parse(scheduleDate);
+            Date scheduleDateObject = new SimpleDateFormat("yyyy-MM-dd").parse(scheduleDate);
             SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
             String scheduleDateFinal = formatter.format(scheduleDateObject);
 
