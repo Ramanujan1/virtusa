@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 class GlobalDefaultExceptionHandler {
-    public static final String DEFAULT_ERROR_VIEW = "Footballer error page:";
+    public static final String DEFAULT_ERROR_VIEW = "Footballer error page !!!!!";
 
     @ExceptionHandler(value = Exception.class)
     public ModelAndView
@@ -23,7 +23,7 @@ class GlobalDefaultExceptionHandler {
 
         // Otherwise setup and send the user to a default error-view.
         ModelAndView mav = new ModelAndView();
-        mav.addObject("exception", e);
+        mav.addObject("exception", e.getMessage());
         mav.addObject("url", req.getRequestURL());
         mav.setViewName(DEFAULT_ERROR_VIEW.concat(e.getMessage()));
         return mav;

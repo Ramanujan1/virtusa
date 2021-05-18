@@ -99,17 +99,16 @@ public class ComponentTest {
     @Test
     public void shouldReturnViewWithPrefilledData() throws Exception {
 
-        Date scheduleDate = new SimpleDateFormat("yyyy-mm-dd").parse("2021-05-17");
+        Date scheduleDate = new SimpleDateFormat("yyyy-MM-dd").parse("2021-05-17");
         when(scheduleComputationService.generateFinalScheduleByDate(scheduleDate)).thenReturn(finalSchedule);
         this.mockMvc
                 .perform(post("/generateSchedule?scheduleDate=2021-05-17")
                         .contentType(MediaType.TEXT_PLAIN)
                 )
-
                 .andExpect(status().isOk())
                 .andExpect(view().name("matchSchedule"))
                 .andExpect(model().attribute("matches", scheduleComputationService.generateFinalScheduleByDate(scheduleDate).getMatchList()))
-                .andExpect(model().attribute("scheduleDateFinal", "17 January 2021"))
+                .andExpect(model().attribute("scheduleDateFinal", "17 May 2021"))
                 .andExpect(model().size(2));
     }
 
