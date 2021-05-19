@@ -1,6 +1,7 @@
 package com.footballapp.scheduler;
 
 import com.footballapp.model.FinalSchedule;
+import com.footballapp.model.Match;
 import com.footballapp.model.TeamDetails;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,5 +64,17 @@ public class ScheduleComputationServiceTest {
         scheduleComputationService.setTeamDetailsList(new ArrayList<>());
         FinalSchedule finalSchedule = scheduleComputationService.generateFinalScheduleByDate(new SimpleDateFormat("yyyy-mm-dd").parse("2021-05-17"));
         assertEquals(finalSchedule.getMatchList(), null);
+    }
+
+    @Test
+    public void testRemoveMatchComnnationsWithSameTeam() throws ParseException {
+        scheduleComputationService.setTeamDetailsList(teamDetailsList);
+        FinalSchedule finalSchedule = scheduleComputationService.generateFinalScheduleByDate(new SimpleDateFormat("yyyy-mm-dd").parse("2021-05-17"));
+        List<Match> matchList = finalSchedule.getMatchList();
+
+        boolean mamatchAgainstSameTeamFound = matchList.stream().anyMatch(match ->
+                match.getTeam1().getTeamName().equals(match.getTeam2().getTeamName())
+        );
+        assertEquals(mamatchAgainstSameTeamFound, false);
     }
 }
