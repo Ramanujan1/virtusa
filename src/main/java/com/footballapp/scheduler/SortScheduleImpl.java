@@ -15,10 +15,10 @@ public class SortScheduleImpl implements ISortScedule {
     Map teamLastPlayedLocationStatus = new ConcurrentHashMap();
 
     @Override
-    public List<String> handleUnsortedHomeAwayMatches(List matchScheduleSorted, List matchCombinationsStringFromInput) {
+    public synchronized List<String> handleUnsortedHomeAwayMatches(List matchScheduleSorted, List matchCombinationsStringFromInput) {
 
         int unsortedListIterationCount = 0;
-        while (matchCombinationsStringFromInput.size() > 0) {
+        while (matchCombinationsStringFromInput.isEmpty()) {
             Iterator unsortedListIterator = matchCombinationsStringFromInput.iterator();
 
             while (unsortedListIterator.hasNext()) {
@@ -26,7 +26,7 @@ public class SortScheduleImpl implements ISortScedule {
                 unsortedListIterationCount++;
 
                 if (unsortedListIterationCount > 2) {
-                    // handle special case where the top most match combination in the unsorted list cannot be scheduled
+                    // handle special case where the top most match combination in the unsorted list cannot be scheduled due to the home away rule
                     // in such cases swap the top most element with the last element and continue the iteration
                     String lastMatch = (String) matchCombinationsStringFromInput.get(matchCombinationsStringFromInput.size() - 1);
                     matchCombinationsStringFromInput.set(matchCombinationsStringFromInput.size() - 1, matchCombinationsStringFromInput.get(0));
@@ -44,11 +44,11 @@ public class SortScheduleImpl implements ISortScedule {
 
             }
         }
-        LOGGER.info("Football Scheduler : Generated sorted schedule from Match combinations , Final sorted list count: "+matchScheduleSorted.size());
+        LOGGER.info("Football Scheduler : Generated sorted schedule from Match combinations , Final sorted list count: " + matchScheduleSorted.size());
         return matchScheduleSorted;
     }
 
-    private void initializeStausMap(Map teamLastPlayedLocationStatus, String[] teamArray) {
+    private void initializeStausMap(Map teamLastPlayedLocationStatus, String... teamArray) {
         if (teamLastPlayedLocationStatus.get(teamArray[0]) == null) {
             teamLastPlayedLocationStatus.put(teamArray[0], "");
         }
@@ -61,7 +61,7 @@ public class SortScheduleImpl implements ISortScedule {
     }
 
 
-    private int getUnsortedListIterationCount(List<String> matchScheduleSorted, Map teamLastPlayedLocationStatus, int unsortedListIterationCount, Iterator unsortedListIterator, String[] teamArray) {
+    private int getUnsortedListIterationCount(List<String> matchScheduleSorted, Map teamLastPlayedLocationStatus, int unsortedListIterationCount, Iterator unsortedListIterator, String... teamArray) {
         if ((teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
                 && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.HOME))
                 || (
@@ -76,7 +76,6 @@ public class SortScheduleImpl implements ISortScedule {
 
         } else if ((teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
                 && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.AWAY))
-
                 ||
                 (teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
                 )

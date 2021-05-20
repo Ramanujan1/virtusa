@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.footballapp.utils.Constants.Verces;
@@ -70,10 +69,10 @@ public class ScheduleComputationService {
             match.setLocationName(match.getTeam1().getLocationName());
 
             matchList.add(match);
-
             finalSchedule.setMatchList(matchList);
 
         });
+
         finalSchedule.setScheduleDate(scheduleDate);
 
         LOGGER.info("Football Scheduler : Final Schedule generate for the given date");
