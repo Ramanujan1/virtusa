@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
 
 public class ScheduleComputationServiceTest {
 
@@ -75,6 +76,6 @@ public class ScheduleComputationServiceTest {
         boolean mamatchAgainstSameTeamFound = matchList.stream().anyMatch(match ->
                 match.getTeam1().getTeamName().equals(match.getTeam2().getTeamName())
         );
-        assertEquals(mamatchAgainstSameTeamFound, false);
+        assertFalse(mamatchAgainstSameTeamFound);
     }
 }

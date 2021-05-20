@@ -7,6 +7,14 @@ public class Match {
     private String locationName;
     private TeamDetails homeTeam;
 
+    public String getLocationName() {
+        return this.locationName;
+    }
+
+    public TeamDetails getHomeTeam() {
+        return this.homeTeam;
+    }
+
     public void setTeam1(TeamDetails team1) {
         this.team1 = team1;
     }

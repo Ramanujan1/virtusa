@@ -18,7 +18,7 @@ public class SortScheduleImpl implements ISortScedule {
     public synchronized List<String> handleUnsortedHomeAwayMatches(List matchScheduleSorted, List matchCombinationsStringFromInput) {
 
         int unsortedListIterationCount = 0;
-        while (matchCombinationsStringFromInput.isEmpty()) {
+        while (!matchCombinationsStringFromInput.isEmpty()) {
             Iterator unsortedListIterator = matchCombinationsStringFromInput.iterator();
 
             while (unsortedListIterator.hasNext()) {
@@ -39,7 +39,7 @@ public class SortScheduleImpl implements ISortScedule {
 
                 initializeStausMap(teamLastPlayedLocationStatus, teamArray);
 
-                unsortedListIterationCount = getUnsortedListIterationCount(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterationCount, unsortedListIterator, teamArray);
+                unsortedListIterationCount = getUnsortedListIterationCount(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterationCount, unsortedListIterator, matchCombinationsStringFromInput.size(), teamArray);
 
 
             }
@@ -61,14 +61,17 @@ public class SortScheduleImpl implements ISortScedule {
     }
 
 
-    private int getUnsortedListIterationCount(List<String> matchScheduleSorted, Map teamLastPlayedLocationStatus, int unsortedListIterationCount, Iterator unsortedListIterator, String... teamArray) {
+    //check te hoome and away rule for the match in question
+    private int getUnsortedListIterationCount(List<String> matchScheduleSorted, Map teamLastPlayedLocationStatus, int unsortedListIterationCount, Iterator unsortedListIterator, int unsortedListSize, String... teamArray) {
         if ((teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.HOME)
                 && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.HOME))
                 || (
                 teamLastPlayedLocationStatus.get(teamArray[0]).equals(Constants.MatchLocation.AWAY)
                         && teamLastPlayedLocationStatus.get(teamArray[1]).equals(Constants.MatchLocation.AWAY)
         )) {
-            if (unsortedListIterationCount > 5) {
+            // this is to handle the condition where we have tried swapping the topmost element with the bottom most
+            // and still could not schedule the match for
+            if (unsortedListIterationCount > unsortedListSize +1) {
                 addToSortedList(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterator, teamArray[1], teamArray[0]);
 
                 unsortedListIterationCount = 0;
