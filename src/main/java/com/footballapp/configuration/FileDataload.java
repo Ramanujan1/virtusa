@@ -8,19 +8,20 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class FileDataload implements ILoadTeamsData{
 
-    BufferedReader br;
+    private BufferedReader bufferedReader;
 
     public List<TeamDetails> getTeamDetails() throws IOException {
 
-        br = new BufferedReader(new FileReader(Constants.DATA_FILE));
+        Scanner sc = new Scanner(new FileReader(Constants.DATA_FILE));
         String line = "";
-        List<TeamDetails> teamDetailsList = new ArrayList<>();
+        final List<TeamDetails> teamDetailsList = new ArrayList<>();
 
-        while((line = br.readLine()) != null) {
-            String[] fields = line.split(Constants.FILE_DELIMITER);
+        while((sc.hasNextLine())) {
+            String[] fields = sc.nextLine().split(Constants.FILE_DELIMITER);
             TeamDetails teamDetails = new TeamDetails();
             teamDetails.setTeamName(fields[0]);
             teamDetails.setLocationName(fields[1]);

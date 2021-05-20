@@ -18,8 +18,9 @@ class GlobalDefaultExceptionHandler {
         // If the exception is annotated with @ResponseStatus rethrow it and let
         // the framework handle it
         if (AnnotationUtils.findAnnotation
-                (e.getClass(), ResponseStatus.class) != null)
+                (e.getClass(), ResponseStatus.class) != null) {
             throw e;
+        }
 
         // Otherwise setup and send the user to a default error-view.
         ModelAndView mav = new ModelAndView();

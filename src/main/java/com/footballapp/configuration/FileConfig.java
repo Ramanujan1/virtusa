@@ -13,7 +13,7 @@ public class FileConfig {
     @Bean(name = "teamDetailsList")
     public List<TeamDetails> getTeamDetails() throws IOException {
 
-        ILoadTeamsData loadTeamsData = new FileDataload();
+        final ILoadTeamsData loadTeamsData = new FileDataload();
 
         return loadTeamsData.getTeamDetails();
     }

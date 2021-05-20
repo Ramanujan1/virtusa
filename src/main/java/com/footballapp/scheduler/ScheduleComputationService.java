@@ -3,7 +3,6 @@ package com.footballapp.scheduler;
 import com.footballapp.model.FinalSchedule;
 import com.footballapp.model.Match;
 import com.footballapp.model.TeamDetails;
-import com.footballapp.utils.Constants;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +10,7 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.footballapp.utils.Constants.Verces;
+import static com.footballapp.utils.Constants.VERSES;
 import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 @Service
@@ -37,7 +36,7 @@ public class ScheduleComputationService {
                             return match;
                         })).filter(match -> match != null && !match.getTeam1().equals(match.getTeam2()))
                         .map(match -> {
-                                    return match.getTeam1().getTeamName().concat(Constants.Verces).concat(match.getTeam2().getTeamName());
+                                    return match.getTeam1().getTeamName().concat(VERSES).concat(match.getTeam2().getTeamName());
                                 }
                         )
                         .collect(Collectors.toList());
@@ -61,7 +60,7 @@ public class ScheduleComputationService {
         List<Match> matchList = new ArrayList<>();
 
         sortedSchedule.stream().forEach(matchString -> {
-            String[] teamsPlaying = matchString.split(Verces);
+            String[] teamsPlaying = matchString.split(VERSES);
             Match match = new Match();
             match.setTeam1(teamDetailsMap.get(teamsPlaying[0]));
             match.setHomeTeam(teamDetailsMap.get(teamsPlaying[0]));

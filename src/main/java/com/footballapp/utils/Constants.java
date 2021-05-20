@@ -9,5 +9,5 @@ public class Constants {
         AWAY
     }
 
-    public static String Verces = "_vs_";
+    public static String VERSES = "_vs_";
 }

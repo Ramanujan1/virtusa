@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.footballapp.utils.Constants.Verces;
+import static com.footballapp.utils.Constants.VERSES;
 import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 public class SortScheduleImpl implements ISortScedule {
@@ -34,7 +34,7 @@ public class SortScheduleImpl implements ISortScedule {
                 }
 
                 String team = (String) unsortedListIterator.next();
-                String[] teamArray = team.split(Verces);
+                String[] teamArray = team.split(VERSES);
 
 
                 initializeStausMap(teamLastPlayedLocationStatus, teamArray);
@@ -104,7 +104,7 @@ public class SortScheduleImpl implements ISortScedule {
 
 
     private void addToSortedList(List<String> matchScheduleSorted, Map teamLastPlayedLocationStatus, Iterator iter, String teamHome, String teamAway) {
-        matchScheduleSorted.add(teamAway.concat(Constants.Verces).concat(teamHome));
+        matchScheduleSorted.add(teamAway.concat(VERSES).concat(teamHome));
         iter.remove();
 
         teamLastPlayedLocationStatus.put(teamHome, Constants.MatchLocation.AWAY);
