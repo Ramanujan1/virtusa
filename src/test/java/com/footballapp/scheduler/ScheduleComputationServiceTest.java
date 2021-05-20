@@ -76,6 +76,7 @@ public class ScheduleComputationServiceTest {
         boolean mamatchAgainstSameTeamFound = matchList.stream().anyMatch(match ->
                 match.getTeam1().getTeamName().equals(match.getTeam2().getTeamName())
         );
+
         assertFalse(mamatchAgainstSameTeamFound);
     }
 }
