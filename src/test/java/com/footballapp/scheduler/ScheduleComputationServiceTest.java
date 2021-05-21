@@ -68,7 +68,7 @@ public class ScheduleComputationServiceTest {
     }
 
     @Test
-    public void testRemoveMatchComnnationsWithSameTeam() throws ParseException {
+    public void testRemoveMatchCombinationsWithSameTeam() throws ParseException {
         scheduleComputationService.setTeamDetailsList(teamDetailsList);
         FinalSchedule finalSchedule = scheduleComputationService.generateFinalScheduleByDate(new SimpleDateFormat("yyyy-mm-dd").parse("2021-05-17"));
         List<Match> matchList = finalSchedule.getMatchList();
