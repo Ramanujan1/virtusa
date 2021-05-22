@@ -16,7 +16,8 @@ import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 @Service
 public class ScheduleComputationService {
 
-    ISortScedule sortScedule = new SortScheduleImpl();
+    @Inject
+    ISortScedule sortSchedule;
 
     @Inject
     @Qualifier("teamDetailsList")
@@ -43,11 +44,9 @@ public class ScheduleComputationService {
 
         LOGGER.info("Football Scheduler : Generated All possible Match combinations for team list, Match combinations count: "+matchCombinationsStringFromInput.size());
 
-
-        return sortScedule.handleUnsortedHomeAwayMatches(matchScheduleSorted, matchCombinationsStringFromInput);
+        return sortSchedule.handleUnsortedHomeAwayMatches(matchScheduleSorted, matchCombinationsStringFromInput);
 
     }
-
 
 
     public FinalSchedule generateFinalScheduleByDate(Date scheduleDate) {
@@ -82,5 +81,10 @@ public class ScheduleComputationService {
     public void setTeamDetailsList(List<TeamDetails> teamDetailsList) {
         this.teamDetailsList = teamDetailsList;
     }
+
+    public void setSortScedule(ISortScedule sortSchedule) {
+        this.sortSchedule = sortSchedule;
+    }
+
 }
 

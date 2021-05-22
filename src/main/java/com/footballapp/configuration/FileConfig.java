@@ -1,6 +1,8 @@
 package com.footballapp.configuration;
 
 import com.footballapp.model.TeamDetails;
+import com.footballapp.scheduler.ISortScedule;
+import com.footballapp.scheduler.SortScheduleImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,5 +18,11 @@ public class FileConfig {
         final ILoadTeamsData loadTeamsData = new FileDataload();
 
         return loadTeamsData.getTeamDetails();
+    }
+
+    @Bean
+    public ISortScedule getSortSchedule() throws IOException {
+
+        return new SortScheduleImpl();
     }
 }

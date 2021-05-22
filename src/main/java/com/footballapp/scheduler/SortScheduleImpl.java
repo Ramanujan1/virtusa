@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.footballapp.utils.Constants.VERSES;
 import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
-public class SortScheduleImpl implements ISortScedule {
+public class SortScheduleImpl extends SortScheduleAbstract implements ISortScedule {
 
     Map teamLastPlayedLocationStatus = new ConcurrentHashMap();
 
@@ -71,9 +71,8 @@ public class SortScheduleImpl implements ISortScedule {
         )) {
             // this is to handle the condition where we have tried swapping the topmost element with the bottom most
             // and still could not schedule the match for
-            if (unsortedListIterationCount > unsortedListSize +1) {
-                addToSortedList(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterator, teamArray[1], teamArray[0]);
-
+            if (unsortedListIterationCount > unsortedListSize + 1) {
+                reconcileSortedAndUnsortedList(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterator, teamArray[1], teamArray[0]);
                 unsortedListIterationCount = 0;
             }
 
@@ -86,28 +85,17 @@ public class SortScheduleImpl implements ISortScedule {
 
                 ) {
 
-            addToSortedList(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterator, teamArray[0], teamArray[1]);
-
+            reconcileSortedAndUnsortedList(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterator, teamArray[0], teamArray[1]);
             unsortedListIterationCount = 0;
 
         } else {
 
-            addToSortedList(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterator, teamArray[1], teamArray[0]);
-
+            reconcileSortedAndUnsortedList(matchScheduleSorted, teamLastPlayedLocationStatus, unsortedListIterator, teamArray[1], teamArray[0]);
             unsortedListIterationCount = 0;
         }
 
         LOGGER.info("Football Scheduler : Generateing unsorrted schedule from Match combinations ");
 
         return unsortedListIterationCount;
-    }
-
-
-    private void addToSortedList(List<String> matchScheduleSorted, Map teamLastPlayedLocationStatus, Iterator iter, String teamHome, String teamAway) {
-        matchScheduleSorted.add(teamAway.concat(VERSES).concat(teamHome));
-        iter.remove();
-
-        teamLastPlayedLocationStatus.put(teamHome, Constants.MatchLocation.AWAY);
-        teamLastPlayedLocationStatus.put(teamAway, Constants.MatchLocation.HOME);
     }
 }
