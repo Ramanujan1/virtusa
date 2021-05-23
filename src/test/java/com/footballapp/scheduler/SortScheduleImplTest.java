@@ -4,6 +4,7 @@ import com.footballapp.model.TeamDetails;
 import com.footballapp.utils.Constants;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -16,12 +17,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.footballapp.utils.Constants.VERSES;
 import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class SortScheduleImplTest {
 
     SortScheduleImpl sortScheduleImpl;
 
     private List<String> matchListInput = new ArrayList<>();
+
+    private List<TeamDetails> teamDetailsList = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -32,6 +36,12 @@ public class SortScheduleImplTest {
             for (int j = 0; j < 3; j++) {
                 matchListInput.add("Team ".concat(String.valueOf(i)).concat(Constants.VERSES.concat("Team ".concat(String.valueOf(j)))));
             }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            TeamDetails teamDetails = new TeamDetails();
+            teamDetails.setTeamName("Team " + i);
+            teamDetailsList.add(teamDetails);
         }
     }
 
@@ -75,6 +85,18 @@ public class SortScheduleImplTest {
         assertEquals(matchSortedList.size(), 14);
     }
 
+    @Test
+    public void generateMatchListForFinalScheduleTest() {
+
+        List matchSortedList = sortScheduleImpl.generateMatchListForFinalSchedule(teamDetailsList);
+
+        assertEquals(matchSortedList.get(0), "Team 0_vs_Team 1");
+        assertEquals(matchSortedList.get(4), "Team 0_vs_Team 2");
+        assertFalse(matchSortedList.contains("Team 0_vs_Team 0"));
+        assertFalse(matchSortedList.contains("Team 1_vs_Team 1"));
+        assertFalse(matchSortedList.contains("Team 2_vs_Team 2"));
+        assertEquals(matchSortedList.size(), 6);
+    }
 }
 
 
