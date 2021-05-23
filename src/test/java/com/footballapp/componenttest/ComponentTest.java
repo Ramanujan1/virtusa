@@ -112,7 +112,6 @@ public class ComponentTest {
     @Test
     public void shouldReturnError() throws Exception {
 
-
         this.mockMvc
                 .perform(post("/generateSchedule?scheduleDate=")
                         .contentType(MediaType.TEXT_PLAIN)

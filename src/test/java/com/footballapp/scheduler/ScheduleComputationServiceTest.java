@@ -1,5 +1,6 @@
 package com.footballapp.scheduler;
 
+import com.footballapp.exception.NoTeamDetailsFound;
 import com.footballapp.model.FinalSchedule;
 import com.footballapp.model.Match;
 import com.footballapp.model.TeamDetails;
@@ -36,6 +37,7 @@ public class ScheduleComputationServiceTest {
     @Test
     public void testGenerateFinalScheduleByDate() throws ParseException {
         scheduleComputationService.setTeamDetailsList(teamDetailsList);
+        scheduleComputationService.setSortScedule(new SortScheduleImpl());
         FinalSchedule finalSchedule = scheduleComputationService.generateFinalScheduleByDate(new SimpleDateFormat("yyyy-mm-dd").parse("2021-05-17"));
 
         assertEquals(finalSchedule.getMatchList().get(10).getTeam1().getTeamName(), "Team 3");
@@ -60,9 +62,10 @@ public class ScheduleComputationServiceTest {
         assertEquals(finalSchedule.getMatchList().size(), 90);
     }
 
-    @Test
+    @Test(expected = NoTeamDetailsFound.class)
     public void testGenerateEmptySchedule() throws ParseException {
         scheduleComputationService.setTeamDetailsList(new ArrayList<>());
+        scheduleComputationService.setSortScedule(new SortScheduleImpl());
         FinalSchedule finalSchedule = scheduleComputationService.generateFinalScheduleByDate(new SimpleDateFormat("yyyy-mm-dd").parse("2021-05-17"));
         assertEquals(finalSchedule.getMatchList(), null);
     }
@@ -70,6 +73,7 @@ public class ScheduleComputationServiceTest {
     @Test
     public void testRemoveMatchCombinationsWithSameTeam() throws ParseException {
         scheduleComputationService.setTeamDetailsList(teamDetailsList);
+        scheduleComputationService.setSortScedule(new SortScheduleImpl());
         FinalSchedule finalSchedule = scheduleComputationService.generateFinalScheduleByDate(new SimpleDateFormat("yyyy-mm-dd").parse("2021-05-17"));
         List<Match> matchList = finalSchedule.getMatchList();
 

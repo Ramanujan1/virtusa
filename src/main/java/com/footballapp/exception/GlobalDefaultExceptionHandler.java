@@ -29,4 +29,15 @@ class GlobalDefaultExceptionHandler {
         mav.setViewName(DEFAULT_ERROR_VIEW.concat(e.getMessage()));
         return mav;
     }
+
+    @ExceptionHandler(value = NoTeamDetailsFound.class)
+    public ModelAndView
+    noTeamDetailsFoundErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+        // Otherwise setup and send the user to a default error-view.
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("exception", e.getMessage());
+        mav.addObject("url", req.getRequestURL());
+        mav.setViewName(DEFAULT_ERROR_VIEW.concat(e.getMessage()));
+        return mav;
+    }
 }
