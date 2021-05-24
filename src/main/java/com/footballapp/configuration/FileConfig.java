@@ -3,6 +3,7 @@ package com.footballapp.configuration;
 import com.footballapp.model.TeamDetails;
 import com.footballapp.scheduler.ISortScedule;
 import com.footballapp.scheduler.SortScheduleImpl;
+import com.footballapp.utils.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,7 +16,7 @@ public class FileConfig {
     @Bean(name = "teamDetailsList")
     public List<TeamDetails> getTeamDetails() throws IOException {
 
-        final ILoadTeamsData loadTeamsData = new FileDataload();
+        final ILoadTeamsData loadTeamsData = LoadDataFactory.getFileLoadClass(Constants.FileLoadMode.LOAD_ON_STARTUP);
 
         return loadTeamsData.getTeamDetails();
     }

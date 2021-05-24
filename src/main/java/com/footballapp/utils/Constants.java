@@ -9,5 +9,9 @@ public class Constants {
         AWAY
     }
 
+    public enum FileLoadMode {
+        LOAD_ON_STARTUP
+    }
+
     public static final String VERSES = "_vs_";
 }
